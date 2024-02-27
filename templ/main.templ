@@ -1,0 +1,135 @@
+package templ
+
+import (
+	"goalApp/model"
+	"fmt"
+)
+
+templ Hello(name string) {
+  <div>
+    Hello { name }
+  </div>
+  
+}
+
+
+templ Goal(goal model.Goal) {
+  @baseLayout(goal.Name) {
+    <span> {goal.Name}</span>
+    <div class="border-black border-4" style="width: 80vw; height: 50px; background-color: white;">
+      <div id={fmt.Sprintf("goalbar_%d", goal.Id)} 
+	class={ "goalbar", "h-full", "bg-red-600", "w-0", "transition-all ease-in-out duration-1000 delay-200 "} 
+	data-ratio={ fmt.Sprintf("%f",(float64(goal.CurrAmount)/float64(goal.TargetAmount))*100) }>
+        
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", e => {
+	document.querySelectorAll(".goalbar").forEach(a => a.style.width = `${a.dataset.ratio}%`)
+      })
+    </script>
+  }
+}
+
+templ Goals(goals []model.Goal) {
+  @baseLayout("goals") {
+    <h1>These are all of your goals</h1>
+    @GoalsBar(goals)
+
+    <a href="#" hx-get="/modal-goal"
+      hx-target="body" hx-swap="beforeend"
+      class="px-4 py-2 bg-green-300 rounded-full whitespace-nowrap"
+      >
+      +
+    </a>
+
+    <div id="curr-goal"/>
+    
+  }
+}
+
+templ GoalsBar(goals []model.Goal) {
+  <div class="flex space-x-3 overflow-x-auto p-2" >
+    for _, goal := range goals {
+      @GoalPill(goal)
+    }
+  </div>
+  <script>
+    document.body.addEventListener("htmx:afterSettle", e => {
+      if(e.target.id == "curr-goal") {
+	document.querySelectorAll(".goalbar").forEach(a => a.style.width = `${a.dataset.ratio}%`)
+      }
+    })
+  </script>
+  
+}
+
+templ Home(goals []model.Goal) {
+  @baseLayout("Goals app") {
+    <h1>this is the home</h1>
+
+    <h2>Pinned goals</h2>
+    @Pinned(goals)
+
+    @Goals(goals)
+
+  }
+
+}
+
+templ FormModalGoal() {
+  @modal(){
+    @FormGoal()
+  }
+}
+
+templ FormGoal() {
+      <h1>New Goal</h1>
+      <form hx-post="/goal" class="table">
+	<div class="table-row">
+	  <label for="Name" class="pr-1">Name</label>
+	  <input type="text" name="Name" class="border-2 rounded border-slate-300 my-2"/>
+	</div>
+	<div class="table-row">
+	  <label for="CurrAmount" class="pr-1">Curr Amount</label>
+	  <input type="number" name="CurrAmount" value="0" class="border-2 rounded border-slate-300 my-2" />
+	</div>
+	<div class="table-row">
+	  <label for="TargetAmount" class="pr-1">Target Amount</label>
+	  <input type="number" name="TargetAmount" placeholder="0" required class="border-2 rounded border-slate-300 my-2"/>
+	</div>
+	<div class="table-row">
+	  <label for="StartDate" class="pr-1">Start Date (default: today)</label>
+	  <input type="date" name="StartDate" class="border-2 rounded border-slate-300 my-2" />
+	</div>
+	<div class="table-row">
+	  <label for="Target Date" class="pr-1">Target Date</label>
+	  <input type="date" name="TargetDate" class="border-2 rounded border-slate-300 my-2" required />
+	</div>
+
+
+      </form>
+      <button _="on click trigger closeModal">close</button>
+}
+
+templ Pinned(goals []model.Goal) {
+  <div class="flex flex-col">
+    for _, goal := range goals {
+      if goal.Pinned {
+	@Goal(goal)
+      }
+    }
+  </div>
+}
+
+
+templ GoalPill(goal model.Goal) {
+  <a href={templ.URL(fmt.Sprintf("/goal?id=%d", goal.Id)) }
+    class="px-4 py-2 bg-green-300 rounded-full whitespace-nowrap"
+    hx-get={fmt.Sprintf("/goal?id=%d", goal.Id)}
+    hx-trigger="click" hx-target="#curr-goal" hx-swap="innerHTML"
+    >
+    { goal.Name }
+  </a>
+}

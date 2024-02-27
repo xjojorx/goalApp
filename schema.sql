@@ -1,0 +1,2 @@
+CREATE TABLE goals (id integer primary key, name text not null, start_date timestamp, target_date timestamp,  curr_amount integer default 0 not null, target_amount integer default 0 not null, pinned integer default FALSE);
+CREATE TABLE goal_changes (id integer primary key, goal_id integer not null, date integer not null, type integer not null, amount integer not null, prev_amount integer not null, post_amount integer not null, foreign key(goal_id) references goals(id));
