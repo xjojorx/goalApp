@@ -164,7 +164,7 @@ func Goals(goals []model.Goal) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <a href=\"#\" hx-get=\"/modal-goal\" hx-target=\"body\" hx-swap=\"beforeend\" class=\"px-4 py-2 bg-green-300 rounded-full whitespace-nowrap\">+</a><div id=\"curr-goal\"></div>")
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(" <div id=\"curr-goal\"></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -197,7 +197,7 @@ func GoalsBar(goals []model.Goal) templ.Component {
 			templ_7745c5c3_Var9 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex space-x-3 overflow-x-auto p-2\">")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex space-x-3 overflow-x-auto p-2\"><a href=\"#\" hx-get=\"/modal-goal\" hx-target=\"body\" hx-swap=\"beforeend\" class=\"px-4 py-2 bg-sky-300 rounded-full whitespace-nowrap\">+</a> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

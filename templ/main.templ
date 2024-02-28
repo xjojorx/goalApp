@@ -37,13 +37,6 @@ templ Goals(goals []model.Goal) {
     <h1>These are all of your goals</h1>
     @GoalsBar(goals)
 
-    <a href="#" hx-get="/modal-goal"
-      hx-target="body" hx-swap="beforeend"
-      class="px-4 py-2 bg-green-300 rounded-full whitespace-nowrap"
-      >
-      +
-    </a>
-
     <div id="curr-goal"/>
     
   }
@@ -51,6 +44,13 @@ templ Goals(goals []model.Goal) {
 
 templ GoalsBar(goals []model.Goal) {
   <div class="flex space-x-3 overflow-x-auto p-2" >
+    <a href="#" hx-get="/modal-goal"
+      hx-target="body" hx-swap="beforeend"
+      class="px-4 py-2 bg-sky-300 rounded-full whitespace-nowrap"
+      >
+      +
+    </a>
+
     for _, goal := range goals {
       @GoalPill(goal)
     }
