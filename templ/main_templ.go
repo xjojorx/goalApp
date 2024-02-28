@@ -197,7 +197,7 @@ func GoalsBar(goals []model.Goal) templ.Component {
 			templ_7745c5c3_Var9 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div class=\"flex space-x-3 overflow-x-auto p-2\"><a href=\"#\" hx-get=\"/modal-goal\" hx-target=\"body\" hx-swap=\"beforeend\" class=\"px-4 py-2 bg-sky-300 rounded-full whitespace-nowrap\">+</a> ")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<div id=\"goals-bar\" class=\"flex space-x-3 overflow-x-auto p-2\" hx-trigger=\"closeModal from:body\" hx-get=\"/goals\" hx-swap=\"outerHTML\" hx-select=\"#goals-bar\"><a href=\"#\" hx-get=\"/modal-goal\" hx-target=\"body\" hx-swap=\"beforeend\" hx-select=\"#modal\" class=\"px-4 py-2 bg-sky-300 rounded-full whitespace-nowrap\">+</a> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -321,7 +321,7 @@ func FormGoal() templ.Component {
 			templ_7745c5c3_Var14 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1>New Goal</h1><form hx-post=\"/goal\" class=\"table\"><div class=\"table-row\"><label for=\"Name\" class=\"pr-1\">Name</label> <input type=\"text\" name=\"Name\" class=\"border-2 rounded border-slate-300 my-2\"></div><div class=\"table-row\"><label for=\"CurrAmount\" class=\"pr-1\">Curr Amount</label> <input type=\"number\" name=\"CurrAmount\" value=\"0\" class=\"border-2 rounded border-slate-300 my-2\"></div><div class=\"table-row\"><label for=\"TargetAmount\" class=\"pr-1\">Target Amount</label> <input type=\"number\" name=\"TargetAmount\" placeholder=\"0\" required class=\"border-2 rounded border-slate-300 my-2\"></div><div class=\"table-row\"><label for=\"StartDate\" class=\"pr-1\">Start Date (default: today)</label> <input type=\"date\" name=\"StartDate\" class=\"border-2 rounded border-slate-300 my-2\"></div><div class=\"table-row\"><label for=\"Target Date\" class=\"pr-1\">Target Date</label> <input type=\"date\" name=\"TargetDate\" class=\"border-2 rounded border-slate-300 my-2\" required></div></form><button _=\"on click trigger closeModal\">close</button>")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString("<h1>New Goal</h1><form hx-post=\"/goal\" hx-target=\"#curr-goal\" hx-swap=\"innerHTML\" class=\"table\" _=\"on submit trigger closeModal\"><div class=\"table-row\"><label for=\"Name\" class=\"pr-1\">Name</label> <input type=\"text\" name=\"Name\" class=\"border-2 rounded border-slate-300 my-2\"></div><div class=\"table-row\"><label for=\"CurrAmount\" class=\"pr-1\">Curr Amount</label> <input type=\"number\" name=\"CurrAmount\" value=\"0\" class=\"border-2 rounded border-slate-300 my-2\"></div><div class=\"table-row\"><label for=\"TargetAmount\" class=\"pr-1\">Target Amount</label> <input type=\"number\" name=\"TargetAmount\" placeholder=\"0\" required class=\"border-2 rounded border-slate-300 my-2\"></div><div class=\"table-row\"><label for=\"StartDate\" class=\"pr-1\">Start Date (default: today)</label> <input type=\"date\" name=\"StartDate\" class=\"border-2 rounded border-slate-300 my-2\"></div><div class=\"table-row\"><label for=\"Target Date\" class=\"pr-1\">Target Date</label> <input type=\"date\" name=\"TargetDate\" class=\"border-2 rounded border-slate-300 my-2\" required></div><button type=\"submit\">Save</button></form>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

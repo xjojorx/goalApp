@@ -43,9 +43,9 @@ templ Goals(goals []model.Goal) {
 }
 
 templ GoalsBar(goals []model.Goal) {
-  <div class="flex space-x-3 overflow-x-auto p-2" >
+  <div id="goals-bar" class="flex space-x-3 overflow-x-auto p-2" hx-trigger="closeModal from:body" hx-get="/goals" hx-swap="outerHTML" hx-select="#goals-bar">
     <a href="#" hx-get="/modal-goal"
-      hx-target="body" hx-swap="beforeend"
+      hx-target="body" hx-swap="beforeend" hx-select="#modal"
       class="px-4 py-2 bg-sky-300 rounded-full whitespace-nowrap"
       >
       +
@@ -86,7 +86,7 @@ templ FormModalGoal() {
 
 templ FormGoal() {
       <h1>New Goal</h1>
-      <form hx-post="/goal" class="table">
+      <form hx-post="/goal" hx-target="#curr-goal" hx-swap="innerHTML" class="table" _="on submit trigger closeModal">
 	<div class="table-row">
 	  <label for="Name" class="pr-1">Name</label>
 	  <input type="text" name="Name" class="border-2 rounded border-slate-300 my-2"/>
@@ -109,8 +109,8 @@ templ FormGoal() {
 	</div>
 
 
+	<button type="submit" >Save</button>
       </form>
-      <button _="on click trigger closeModal">close</button>
 }
 
 templ Pinned(goals []model.Goal) {

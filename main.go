@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	"github.com/labstack/echo/v4"
@@ -52,6 +53,55 @@ func routes(e *echo.Echo) {
 
   e.GET("/modal-goal", func(c echo.Context) error {
     comp := templ.FormModalGoal()
+    return comp.Render(c.Request().Context(), c.Response().Writer)
+  })
+
+  e.POST("/goal", func(c echo.Context) error {
+    name := c.FormValue("Name")
+    CurrAmount := c.FormValue("CurrAmount")
+    TargetAmount := c.FormValue("TargetAmount")
+    StartDate := c.FormValue("StartDate")
+    TargetDate := c.FormValue("TargetDate")
+
+    curr, err := strconv.Atoi(CurrAmount)
+    if err != nil {
+      log.Printf("error parsing current amount, received: %#v", CurrAmount, err)
+      curr = 0
+    }
+    target, err := strconv.Atoi(TargetAmount)
+    if err != nil {
+      log.Printf("error parsing target amount, received: %#v", TargetAmount, err)
+      return err
+    }
+    start, err := time.Parse("2006-01-02", StartDate)
+    if err != nil {
+      log.Printf("error parsing start date, received: %#v", StartDate, err)
+      start = time.Now().UTC()
+    }
+    end, err := time.Parse("2006-01-02",TargetDate)
+    if err != nil {
+      log.Printf("error parsing target date, received: %#v", TargetDate, err)
+      return err
+    }
+
+    goal := model.Goal{
+      Name: name,
+      CurrAmount: curr,
+      TargetAmount: target,
+      StartDate: start,
+      TargetDate: end,
+    }
+
+    goal, err = CreateGoal(db, goal)
+    if err != nil {
+      return err
+    }
+
+    //c.Response().Header().Add("HX-Trigger", "refreshBar")
+    // Add() and Set() mess with header case
+    // c.Response().Header()["HX-Trigger"] =[]string{ "refreshBar"}
+
+    comp := templ.Goal(goal)
     return comp.Render(c.Request().Context(), c.Response().Writer)
   })
 }
