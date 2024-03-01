@@ -1,2 +1,3 @@
 *.db
 dump.sql
+templ/*.go

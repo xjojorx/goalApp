@@ -3,7 +3,7 @@ module goalApp
 go 1.21.5
 
 require (
-	github.com/a-h/templ v0.2.543 // indirect
+	github.com/a-h/templ v0.2.590 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/jmoiron/sqlx v1.3.5 // indirect
 	github.com/labstack/echo/v4 v4.11.4 // indirect
