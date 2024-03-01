@@ -43,7 +43,7 @@ templ Goals(goals []model.Goal) {
 }
 
 templ GoalsBar(goals []model.Goal) {
-  <div id="goals-bar" class="flex space-x-3 overflow-x-auto p-2" hx-trigger="closeModal from:body" hx-get="/goals" hx-swap="outerHTML" hx-select="#goals-bar">
+  <div id="goals-bar" class="flex space-x-3 overflow-x-auto p-2" hx-trigger="closeModal from:body" hx-get="/goals" hx-swap="outerHTML" hx-select="#goals-bar" hx-disinherit="*">
     <a href="#" hx-get="/modal-goal"
       hx-target="body" hx-swap="beforeend" hx-select="#modal"
       class="px-4 py-2 bg-sky-300 rounded-full whitespace-nowrap"

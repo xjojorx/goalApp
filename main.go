@@ -65,22 +65,22 @@ func routes(e *echo.Echo) {
 
     curr, err := strconv.Atoi(CurrAmount)
     if err != nil {
-      log.Printf("error parsing current amount, received: %#v", CurrAmount, err)
+      log.Printf("error parsing current amount, received: %s, %#v", CurrAmount, err)
       curr = 0
     }
     target, err := strconv.Atoi(TargetAmount)
     if err != nil {
-      log.Printf("error parsing target amount, received: %#v", TargetAmount, err)
+      log.Printf("error parsing target amount, received: %s, %#v", TargetAmount, err)
       return err
     }
     start, err := time.Parse("2006-01-02", StartDate)
     if err != nil {
-      log.Printf("error parsing start date, received: %#v", StartDate, err)
+      log.Printf("error parsing start date, received: %s, %#v", StartDate, err)
       start = time.Now().UTC()
     }
     end, err := time.Parse("2006-01-02",TargetDate)
     if err != nil {
-      log.Printf("error parsing target date, received: %#v", TargetDate, err)
+      log.Printf("error parsing target date, received: %s, %#v", TargetDate, err)
       return err
     }
 
