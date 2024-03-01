@@ -13,11 +13,33 @@ templ Hello(name string) {
 }
 
 
-templ Goal(goal model.Goal) {
+templ Goal(goal model.Goal, showEdit bool) {
   @baseLayout(goal.Name) {
-    <span> {goal.Name}</span>
+    <span> {goal.Name}:</span>
+    <span>{fmt.Sprintf("%d/%d (%.2f)", goal.CurrAmount, goal.TargetAmount,(float64(goal.CurrAmount)/float64(goal.TargetAmount))*100) }</span> 
+
+    if showEdit {
+      <div class="edit-goal" data-goal={ fmt.Sprintf("%d",goal.Id)} >
+	<span class="px-4 py-2 bg-red-300 rounded-full whitespace-nowrap"
+	  hx-patch={ fmt.Sprintf("/goal?id=%d&op=reduce", goal.Id) }
+	  hx-include={ fmt.Sprintf(".edit-goal[data-goal='%d'] input", goal.Id)}
+	  hx-target="#curr-goal" hx-swap="innerHTML"
+	>
+	  -
+	</span>
+	<input type="number" name="changeAmount" class="changeField"  placeholder="0" />
+	<span class="px-4 py-2 bg-green-300 rounded-full whitespace-nowrap"
+	  hx-patch={ fmt.Sprintf("/goal?id=%d&op=add", goal.Id) }
+	  hx-include={ fmt.Sprintf(".edit-goal[data-goal='%d'] input", goal.Id)}
+	  hx-target="#curr-goal" hx-swap="innerHTML"
+	>
+	  +
+	</span>
+      </div>
+      }
+
     <div class="border-black border-4" style="width: 80vw; height: 50px; background-color: white;">
-      <div id={fmt.Sprintf("goalbar_%d", goal.Id)} 
+      <div id={ fmt.Sprintf("goalbar_%d", goal.Id)} 
 	class={ "goalbar", "h-full", "bg-red-600", "w-0", "transition-all ease-in-out duration-1000 delay-200 "} 
 	data-ratio={ fmt.Sprintf("%f",(float64(goal.CurrAmount)/float64(goal.TargetAmount))*100) }>
         
@@ -117,7 +139,7 @@ templ Pinned(goals []model.Goal) {
   <div class="flex flex-col">
     for _, goal := range goals {
       if goal.Pinned {
-	@Goal(goal)
+	@Goal(goal, false)
       }
     }
   </div>
@@ -125,9 +147,9 @@ templ Pinned(goals []model.Goal) {
 
 
 templ GoalPill(goal model.Goal) {
-  <a href={templ.URL(fmt.Sprintf("/goal?id=%d", goal.Id)) }
+  <a href={ templ.URL(fmt.Sprintf("/goal?id=%d", goal.Id)) }
     class="px-4 py-2 bg-green-300 rounded-full whitespace-nowrap"
-    hx-get={fmt.Sprintf("/goal?id=%d", goal.Id)}
+    hx-get={ fmt.Sprintf("/goal?id=%d", goal.Id)}
     hx-trigger="click" hx-target="#curr-goal" hx-swap="innerHTML"
     >
     { goal.Name }

@@ -37,7 +37,49 @@ func routes(e *echo.Echo) {
       c.NoContent(404)
     }
 
-    comp := templ.Goal(goal)
+    comp := templ.Goal(goal, true)
+    return comp.Render(c.Request().Context(), c.Response().Writer)
+  })
+  e.PATCH("/goal", func(c echo.Context) error {
+    qparam := c.QueryParams()
+    idStr := qparam.Get("id")
+    id, err := strconv.Atoi(idStr)
+    if err != nil {
+      log.Printf("error getting id, received '%s'", idStr)
+      return c.String(http.StatusBadRequest, "Invalid id")
+    }
+
+    qttyStr := c.FormValue("changeAmount")
+    qtty, err := strconv.Atoi(qttyStr)
+    if err != nil {
+      log.Printf("error getting amount, received '%s'", qttyStr)
+      log.Printf("%+v", c.Request())
+      return c.String(http.StatusBadRequest, "Invalid amount")
+    }
+
+    op := qparam.Get("op")
+
+    goal, err := GetGoalById(db, id)
+    if err != nil {
+      return c.NoContent(404)
+    }
+
+    if op == "reduce" {
+      goal.CurrAmount -= qtty
+    }
+    if op == "set" {
+      goal.CurrAmount = qtty
+    }
+    if op == "add" {
+      goal.CurrAmount += qtty
+    }
+
+    updated, err := UpdateGoal(db, goal)
+    if err != nil {
+      return err
+    }
+
+    comp := templ.Goal(updated, true)
     return comp.Render(c.Request().Context(), c.Response().Writer)
   })
 
@@ -101,7 +143,7 @@ func routes(e *echo.Echo) {
     // Add() and Set() mess with header case
     // c.Response().Header()["HX-Trigger"] =[]string{ "refreshBar"}
 
-    comp := templ.Goal(goal)
+    comp := templ.Goal(goal, true)
     return comp.Render(c.Request().Context(), c.Response().Writer)
   })
 }
@@ -130,7 +172,7 @@ func GetGoalById(db *sqlx.DB, goalId int) (goal model.Goal, e error) {
 }
 
 func CreateGoal(db *sqlx.DB, goal model.Goal) (resGoal model.Goal, e error) {
-  query := "INSERT INTO goals (name, start_date, target_date, target_amount, pinned) VALUES (:name, :start_date, :target_date, :target_amount, :pinned)"
+  query := "INSERT INTO goals (name, start_date, target_date, curr_amount, target_amount, pinned) VALUES (:name, :start_date, :target_date, :curr_amount, :target_amount, :pinned)"
 
   res, err := db.NamedExec(query, goal)
   if err != nil {
@@ -142,6 +184,22 @@ func CreateGoal(db *sqlx.DB, goal model.Goal) (resGoal model.Goal, e error) {
   log.Printf("inserted on id '%d'", insertedId)
   
   resGoal, err = GetGoalById(db, int(insertedId))
+
+  return
+}
+
+func UpdateGoal(db *sqlx.DB, goal model.Goal) (resGoal model.Goal, e error) {
+  query := "UPDATE goals set name=:name, start_date=:start_date, target_date=:target_date, curr_amount=:curr_amount, target_amount=:target_amount, pinned=:pinned WHERE id=:id"
+
+  _, err := db.NamedExec(query, goal)
+  if err != nil {
+    log.Println("error: ", err)
+    e = err
+    return
+  }
+  log.Printf("updated goal on id '%d'", goal.Id)
+  
+  resGoal, err = GetGoalById(db, goal.Id)
 
   return
 }
